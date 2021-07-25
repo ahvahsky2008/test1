@@ -94,9 +94,7 @@ def create_user():
     if request.method == 'GET':
         roles = [x.name for x in Role.query.all()]
         return render_template('create_user.html',roles=roles)
-
     else:
-        
         new_role = request.json['role']
         new_username = request.json['username']
         new_password = request.json['password']
@@ -120,7 +118,6 @@ def edit_user(id):
         roles = [x.name for x in Role.query.all()]
 
         return render_template('edit_user.html',roles=roles, user=user)
-
     else:
         user_id = request.json['user_id']
         user = User.query.filter(User.id == user_id).first()
