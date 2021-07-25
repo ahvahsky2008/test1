@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary rounded">
+  <a class="navbar-brand" href="#">#</a>
+  <ul class="navbar-nav mr-auto">
+    
+    {% if session.logged_in %}
+        <li class="nav-item active">
+        <a class="nav-link">Manage users</a>
+        </li>
+    {% endif %}
+
+  </ul>
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+    {% if session.logged_in %}
+      <button onclick=" sign_out() " type="submit" class="btn btn-primary btn-block">Logout</button>
+    {% endif %}
+    </li>
+  </ul>
+  <script>
+      function sign_out() {
+        $.ajax({
+                url: '/sign_out',
+                method: 'get',
+                
+                error: function(data){
+                  console.log('error');
+                  console.log(data);
+                },
+                success: function(data){
+                    console.log('success');
+                    if (data=='ok'){
+                        window.location = "/users";
+                    }
+                    else{
+                        alert(data);
+                    }
+                    
+                },
+                done: function(data){
+                  console.log('done');
+                  console.log(data);
+                }
+
+            });
+    }
+  </script>
+
+</nav>

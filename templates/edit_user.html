@@ -1,0 +1,103 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <div class="container">
+  <h1 class="my-4">edit user</h1>
+
+  <form id="my-form" action="" method="POST">
+    <div class="form-row">
+      <div class="col-sm-10 my-1">
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Username</span>
+        </div>
+        <input id="username" type="text"   value={{ user.username }} class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+      </div>
+
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <span class="input-group-text" id="basic-addon1">Password</span>
+        </div>
+        <input id="password" type="password" value="its_not_my_password" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1">
+      </div>
+
+        <br>        
+        <p> Select role</p>
+
+        <select id="roles" name="roles" method="GET" action="/">
+            {% for role in roles %}
+              {% if role in user.roles[0].name %}
+                <option value="{{role}}" SELECTED>{{role}}</option>"
+              {% elif user.roles[0].name == 'Admin' and session['username']==user.username %}
+                <option selected="true" disabled="disabled" value="{{role}}" SELECTED>{{role}} </option>    
+              {% else%}
+                <option value="{{role}}">{{role}}</option>
+              {% endif %}
+            {% endfor %}
+        </select>
+
+        <div class="col- my-1">
+          <button type="submit" class="btn btn-primary btn-block">Update</button>
+        </div>
+
+      </div>
+      
+    </div>
+  </form>
+
+   <script>
+        window.addEventListener("load", function() {
+        document.getElementById('my-form').addEventListener("submit", function(e) {
+            
+            e.preventDefault(); 
+            
+            var role =   document.getElementById("roles").value;
+            var userid = {{ user.id }};
+
+            var username = document.getElementById('username').value; 
+            var password = document.getElementById('password').value; 
+            
+            if (password.length==0){
+              alert('Pls enter password more symbols');
+              return;
+            }
+            
+            $.ajax({
+                url: '/users/'+userid+'/edit',
+                method: 'post',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'user_id': userid,
+                    'role': role,
+                    'username':username,
+                    'password':password,
+                    }),
+                
+                error: function(data){
+                  console.log('error');
+                  console.log(data);
+                },
+                success: function(data){
+                    console.log('success');
+                    if (data=='ok'){
+                        window.location = "/users";
+                    }
+                    else{
+                        alert(data);
+                    }
+                    
+                },
+                done: function(data){
+                  console.log('done');
+                  console.log(data);
+                }
+
+            });
+            
+        })
+        });
+  </script>
+</div>
+{% endblock %}

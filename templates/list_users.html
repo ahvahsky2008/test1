@@ -1,0 +1,99 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+
+  <div class="container">
+  <h1 class="my-4"></h1>
+
+  {% if users|length < 1 %}
+  <p>There is no data.</p>
+  {% else %}
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Users</th>
+        <th>Rights</th>
+        <th class='text-right'>Operations</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for user in users %}
+        <tr>
+          <td>{{ user['username'] }}</td>
+          <td>{{ user['role'] }}</td>
+          {% if session['role']=='Admin' %}
+            <td class="text-right">
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <a class="btn btn-warning btn-sm" href="/users/{{ user['id'] }}/edit" role="button">Edit</a>
+                <a onclick="doalert(this); return false;" id="link" class="btn btn-danger btn-sm" value="{{ user['id'] }}; return false;" role="button">Delete</a>
+              </div>
+            </td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  <form action="/" method="POST">
+    <div class="form-row">
+      <div class="col-sm-12 my-1">
+        <button  type="button"  onclick="window.location.href='users/create';" class="btn btn-primary btn-block">Add new user</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+    function doalert(elem) {
+
+        if (confirm('Are you sure delete this user?')) {
+
+          var userid = elem.getAttribute('value').split(';')[0];
+          console.log(userid);
+
+           $.ajax({
+                url: '/users/'+userid+'/delete',
+                method: 'post',
+                contentType:'application/json; charset=utf-8',
+                data: JSON.stringify({
+                    'user_id': userid
+                    }),
+                
+                error: function(data){
+                  console.log('error');
+                  console.log(data);
+                },
+                success: function(data){
+                    console.log('success');
+                    if (data=='ok'){
+                        window.location = "/users";
+                    }
+                    else{
+                        alert(data);
+                    }
+                    return false;
+                    
+                },
+                done: function(data){
+                  console.log('done');
+                  console.log(data);
+                  return false;
+                }
+
+            });
+          
+        } else {
+          console.log(elem.getAttribute('value').split(';')[0]);
+        }
+        return false;
+    }
+</script>
+
+<script>
+
+      function delete_user(elem) {
+       alert(elem);
+    }
+  </script>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+  <h1>Login</h1>
+  
+  <form id="my-form" action="" method="POST">
+    <div class="form-group">
+      <label>Username</label>
+      <input type="text" name="username" class="form-control" value={{request.form.username}}>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" name="password" class="form-control" value={{request.form.password}}>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+  
+  <script>
+        window.addEventListener("load", function() {
+        document.getElementById('my-form').addEventListener("submit", function(e) {
+            e.preventDefault(); 
+            
+            var username = document.querySelector("[name='username']").value;
+            var password = document.querySelector("[name='password']").value;
+
+            $.ajax({
+                url: '/login',
+                method: 'post',
+                dataType: 'html',
+                data: {
+                    username: username,
+                    password: password
+                    },
+                success: function(data){
+                    if (data=='auth failed'){
+                        alert('Auth error. Please check credentials')
+                    }
+                    else{
+                        window.location = "/";
+
+                    }
+                    
+                }
+            });
+        })
+        });
+  </script>
+
+{% endblock %}
